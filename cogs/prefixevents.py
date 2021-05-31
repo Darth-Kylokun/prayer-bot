@@ -5,7 +5,7 @@ from database import coro_session, Prefixes
 class PrefixEvents(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.session = coro_session
+        self.session = coro_session # This inly works because coro_session has already been awaited in another cog. Why does this work i have no idea
 
     @Cog.listener()
     async def on_guild_join(self, guild):

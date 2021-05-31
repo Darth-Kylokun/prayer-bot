@@ -1,5 +1,6 @@
 from discord.ext.commands import Cog, Bot, command, Context
-from discord.ext.commands.errors import BadArgument, CommandError, MissingRequiredArgument
+from discord.ext.commands.core import has_guild_permissions, has_permissions
+from discord.ext.commands.errors import BadArgument, CommandError, MissingPermissions, MissingRequiredArgument, NoPrivateMessage
 from discord.mentions import AllowedMentions
 from sqlalchemy.orm import selectinload
 from database import coro_session, Entitys, Prayers, Prefixes
@@ -275,6 +276,29 @@ class Commands(Cog):
     async def removeentity_error(self, ctx: Context, error: CommandError):
         if isinstance(error, MissingRequiredArgument):
             await ctx.reply("Missing argument\n> removeentity <name>", allowed_mentions=self.am)
+
+    @command()
+    @has_guild_permissions(administrator=True)
+    async def changeprefix(self, ctx: Context, new_prefix: str):
+        async with self.session() as s:
+            async with s.begin():
+                stmt = select(Prefixes).where(Prefixes.server_id == ctx.guild.id)
+                res = await s.execute(stmt)
+
+                res.scalars().first().prefix = new_prefix
+
+                await s.commit()
+
+        await ctx.send(f"Succefully change prefix to {new_prefix}")
+
+    @changeprefix.error
+    async def changeprefix_error(self, ctx: Context, error: CommandError):
+        if isinstance(error, MissingPermissions):
+            await ctx.reply("You are missing the permssion for 'administrator'", allowed_mentions=self.am)
+        elif isinstance(error, NoPrivateMessage):
+            await ctx.reply("You can only change the prefix in servers", allowed_mentinos=self.am)
+        elif isinstance(error, MissingRequiredArgument):
+            await ctx.reply("Missing argument\n> changeprefix <new_prefix>", allowed_mentions=self.am)
 
 def setup(bot: Bot):
     bot.add_cog(Commands(bot))

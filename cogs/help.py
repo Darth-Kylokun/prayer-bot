@@ -19,6 +19,7 @@ class Help(Cog):
         embed.add_field(name="> entities", value="Shows all entities you have added", inline=False)
         embed.add_field(name="> removeprayer <name> <id>", value="Removes a prayer from an entity and the rest of the prayer IDs might change", inline=False)
         embed.add_field(name="> removeentity <name>", value="Removes an entity", inline=False)
+        embed.add_field(name="> changeprefix <new_prefix>", value="Changes the prefix in a server. The default prefix/dm prefix is !!", inline=False)
         embed.add_field(name="**WARNING**", value="If an entity has name that involves two words you must encapsulate the name in quotation marks ex. \"prayer bot\" or you can add a underscore to represent a space ex. prayer_bot", inline=False)
         embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
         embed.timestamp = datetime.utcnow()
