@@ -3,8 +3,6 @@ from sqlalchemy import create_engine
 import os
 from dotenv.main import load_dotenv
 
-
-
 def __setup():
     load_dotenv(".env")
     password = os.environ["PG_PASSWORD"]

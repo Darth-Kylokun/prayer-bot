@@ -3,7 +3,9 @@ from discord.ext.commands.core import has_guild_permissions, has_permissions
 from discord.ext.commands.errors import BadArgument, CommandError, MissingPermissions, MissingRequiredArgument, NoPrivateMessage
 from discord.mentions import AllowedMentions
 from sqlalchemy.orm import selectinload
-from database import coro_session, Entitys, Prayers, Prefixes
+from sqlalchemy.orm.session import sessionmaker
+from database import Entitys, Prayers, Prefixes, async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
 from sqlalchemy.future import select
 from discord import Embed
@@ -12,7 +14,7 @@ from datetime import datetime
 class Commands(Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
-        self.session = asyncio.get_event_loop().run_until_complete(coro_session)
+        self.session = sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
         self.am = AllowedMentions()
         self.am.replied_user = False
 

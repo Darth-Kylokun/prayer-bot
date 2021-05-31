@@ -1,16 +1,14 @@
-from .tables import Base, Entitys, Prayers, Prefixes
-from .engine import async_engine, sync_engine
-from sqlalchemy.orm.session import sessionmaker
-from sqlalchemy.ext.asyncio import AsyncSession
+import asyncio
+from database.tables import Base
+from .engine import sync_engine, async_engine
+from .tables import Base, Prefixes, Entitys, Prayers
 from sqlalchemy.orm import Session
 
-async def _setup():
-    async with async_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+def __setup():
+    Base.metadata.create_all(sync_engine)
 
-    ses = sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
+    ses = Session(sync_engine)
 
     return ses
 
-coro_session = _setup()
-session = Session(sync_engine)
+session = __setup()
