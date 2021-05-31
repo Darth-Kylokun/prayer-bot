@@ -13,7 +13,7 @@ class Help(Cog):
         embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
         embed.add_field(name="> addentity <name>", value="Creates an entity and you can also attach an image that will then be associated with that entity", inline=False)
         embed.add_field(name="> updatename <old_name> <new_name>", value="Changes an entitys name", inline=False)
-        embed.add_field(name="> updateimage <entity>", value="Allows you to add or update an image for an entity", inline=False)
+        embed.add_field(name="> updateimage <name>", value="Allows you to add or update an image for an entity", inline=False)
         embed.add_field(name="> addprayer <name> <prayer>", value="Stores a prayer dedicated to an entity", inline=False)
         embed.add_field(name="> prayers <name>", value="Shows stored prayers for that entity and gives the prayers id along with them", inline=False)
         embed.add_field(name="> entities", value="Shows all entities you have added", inline=False)
