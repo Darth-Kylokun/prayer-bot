@@ -1,12 +1,15 @@
-import asyncio
 import os
 from discord.ext import commands
-from dotenv import load_dotenv
+from database import session, Prefixes
+
+def get_prefix(_bot, message):
+    try:
+        return session.query(Prefixes).filter_by(server_id=message.guild.id).one().prefix
+    except:
+        return "!!"
 
 def main():
-    load_dotenv()
-
-    Bot = commands.Bot(command_prefix="!!")
+    Bot = commands.Bot(command_prefix=get_prefix)
     Bot.remove_command("help")
 
     for f in os.listdir('./cogs'):

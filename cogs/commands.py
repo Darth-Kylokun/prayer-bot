@@ -2,7 +2,7 @@ from discord.ext.commands import Cog, Bot, command, Context
 from discord.ext.commands.errors import BadArgument, CommandError, MissingRequiredArgument
 from discord.mentions import AllowedMentions
 from sqlalchemy.orm import selectinload
-from database import coro_session, Entitys, Prayers
+from database import coro_session, Entitys, Prayers, Prefixes
 import asyncio
 from sqlalchemy.future import select
 from discord import Embed

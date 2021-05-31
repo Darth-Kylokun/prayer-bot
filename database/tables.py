@@ -23,3 +23,10 @@ class Prayers(Base):
     id = Column(Integer, primary_key=True)
     e_id = Column(ForeignKey("entitys.id"))
     text = Column(String)
+
+class Prefixes(Base):
+   __tablename__ = "prefixes"
+
+   id = Column(BigInteger, primary_key=True)
+   prefix = Column(String)
+   server_id = Column(BigInteger, unique=True)
