@@ -3,4 +3,4 @@ import os
 
 password = os.environ["PG_PASSWORD"]
 
-engine = create_async_engine(f"postgresql+asyncpg://localhost:5432/tomato?user=postgres&password={password}", echo=False)
+engine = create_async_engine(f"postgresql+asyncpg://localhost:5432/tomato?user=darth&password={password}", echo=False)
