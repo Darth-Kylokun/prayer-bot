@@ -3,11 +3,25 @@ from sqlalchemy.sql.expression import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.session import sessionmaker
 from database import Prefixes, async_engine
+from discord import Activity, ActivityType
+from itertools import cycle
+from discord.ext import tasks
 
-class PrefixEvents(Cog):
+class Events(Cog):
     def __init__(self, bot: Bot):
-        self.bot = bot
-        self.session = sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession) # This inly works because coro_session has already been awaited in another cog. Why does this work i have no idea
+        self.bot: Bot = bot
+        self.session = sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
+        self.cycle = None
+        
+    @Cog.listener()
+    async def on_ready(self):
+        self.cycle = cycle([f"{len(self.bot.guilds)} servers", "!!help command"])
+
+        self.change.start()
+        self.update_cycle.start()
+
+        print(f"Connected to bot: {self.bot.user.name}")
+        print(f"Bot ID: {self.bot.user.id}")
 
     @Cog.listener()
     async def on_guild_join(self, guild):
@@ -26,5 +40,15 @@ class PrefixEvents(Cog):
                 await s.delete(res.scalars().first())
                 await s.commit()
 
+    @tasks.loop(minutes=3)
+    async def change(self):
+        await self.bot.change_presence(activity=Activity(type=ActivityType.listening, name=next(self.cycle)))
+
+    @tasks.loop(minutes=30)
+    async def update_cycle(self):
+        self.cycle = cycle([f"{len(self.bot.guilds)} servers", "!!help command"])
+        # This is somewhat bad but damnt i want the amount of guilds to be accurate to an extent
+
+
 def setup(bot: Bot):
-    bot.add_cog(PrefixEvents(bot))
+    bot.add_cog(Events(bot))
