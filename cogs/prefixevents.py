@@ -12,16 +12,25 @@ class Events(Cog):
         self.bot: Bot = bot
         self.session = sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
         self.cycle = None
+        self.ready = False
         
     @Cog.listener()
     async def on_ready(self):
-        self.cycle = cycle([f"{len(self.bot.guilds)} servers", "!!help command"])
+        if not self.ready:
+            self.cycle = cycle([f"{len(self.bot.guilds)} servers", "!!help command"])
 
-        self.change.start()
-        self.update_cycle.start()
+            self.change.start()
+            self.update_cycle.start()
 
-        print(f"Connected to bot: {self.bot.user.name}")
-        print(f"Bot ID: {self.bot.user.id}")
+            print(f"Connected to bot: {self.bot.user.name}")
+            print(f"Bot ID: {self.bot.user.id}")
+
+            self.ready= True
+        else:
+            self.change.start()
+            self.update_cycle.start()
+
+            print("Reconnected")
 
     @Cog.listener()
     async def on_guild_join(self, guild):
@@ -39,6 +48,12 @@ class Events(Cog):
                 res = await s.execute(stmt)
                 await s.delete(res.scalars().first())
                 await s.commit()
+
+    @Cog.listener()
+    async def on_disconnect(self):
+        self.change.cancel()
+        self.update_cycle.cancel()
+        print("Disconnected")
 
     @tasks.loop(minutes=3)
     async def change(self):
