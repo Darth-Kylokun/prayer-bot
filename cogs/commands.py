@@ -298,7 +298,7 @@ class Commands(Cog):
         if isinstance(error, MissingPermissions):
             await ctx.reply("You are missing the permssion for 'administrator'", allowed_mentions=self.am)
         elif isinstance(error, NoPrivateMessage):
-            await ctx.reply("You can only change the prefix in servers", allowed_mentinos=self.am)
+            await ctx.reply("You can only change the prefix in servers", allowed_mentions=self.am)
         elif isinstance(error, MissingRequiredArgument):
             await ctx.reply("Missing argument\n> changeprefix <new_prefix>", allowed_mentions=self.am)
 
