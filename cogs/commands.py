@@ -8,7 +8,7 @@ from database import Entitys, Prayers, Prefixes, async_engine
 from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
 from sqlalchemy.future import select
-from discord import Embed
+from discord import Embed, message
 from datetime import datetime
 
 class Commands(Cog):
@@ -25,17 +25,64 @@ class Commands(Cog):
 
             res = await s.execute(entity_stmt)
 
-            entity_obj = res.scalars()
+            entity_list = res.scalars().all()
+            entity_list_len = len(entity_list)
 
             embed = Embed(title="Entities", color=0x990000)
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
 
-            for entity in entity_obj:
-                embed.add_field(name=f"> {entity.name}", value="\u200b", inline=False)
+            pointer = 0
+
+            for i in range(6):
+                try:
+                    embed.add_field(name=f"> {entity_list[pointer+i].name}", value="\u200b", inline=False)
+                except:
+                    break
             
             embed.timestamp = datetime.utcnow()
 
-            await ctx.send(embed=embed)
+            message = None
+
+            if entity_list_len <= 6:
+                await ctx.send(embed=embed)
+                return
+            else:
+                message = await ctx.send(embed=embed)
+                await message.add_reaction('➡️')
+
+            def check(reaction, user):
+                return user == ctx.author and str(reaction.emoji) in ('⬅️', '➡️')
+
+            while 1:
+                try:
+                    reaction, _ = await self.bot.wait_for('reaction_add', timeout=30, check=check)
+
+                    if reaction.emoji == '➡️':
+                       pointer += 6
+                    elif reaction.emoji == '⬅️':
+                        pointer -= 6
+
+                    await message.clear_reactions()
+
+                    embed = Embed(title="Entities", color=0x990000)
+                    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+
+                    try:
+                        for i in range(6):
+                            embed.add_field(name=f"> {entity_list[pointer+i].name}", value="\u200b", inline=False)
+                    except:
+                        pass
+                    
+                    embed.timestamp = datetime.utcnow()
+
+                    if pointer >= 6:
+                        await message.add_reaction('⬅️')
+                    if entity_list_len >= pointer+6:
+                        await message.add_reaction('➡️')
+
+                    await message.edit(embed=embed)
+                except asyncio.TimeoutError:
+                    return
 
     @command()
     async def prayers(self, ctx: Context, entity: str):
@@ -58,9 +105,10 @@ class Commands(Cog):
                 
                 pointer = 0
                 embed = Embed(title=f"Prayers for {entity}", color=0x990000)
-                print(entity_obj.image)
+
                 if entity_obj.image is not None:
                     embed.set_thumbnail(url=entity_obj.image)
+                
                 embed.add_field(name=f"Prayer {pointer + 1}", value=f"{prayers[pointer].text}", inline=False)
                 embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
                 embed.timestamp = datetime.utcnow()
@@ -91,7 +139,8 @@ class Commands(Cog):
                                 await message.add_reaction('➡️')
 
                             e_embed = Embed(title=f"Prayers for {entity}", color=0x990000)
-                            embed.set_thumbnail(url=entity_obj.image)
+                            if entity_obj.image is not None:
+                                e_embed.set_thumbnail(url=entity_obj.image)
                             e_embed.add_field(name=f"Prayer {pointer + 1}", value=f"{prayers[pointer].text}", inline=False)
                             embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
                             embed.timestamp = datetime.utcnow()
@@ -99,7 +148,7 @@ class Commands(Cog):
                                 e_embed.add_field(name=f"Prayer {pointer + 2}", value=f"{prayers[pointer+1].text}", inline=False)
                             except:
                                 pass
-                           
+                            
                             await message.edit(embed=e_embed)
                         except asyncio.TimeoutError:
                             return
