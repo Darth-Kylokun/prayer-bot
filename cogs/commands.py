@@ -18,7 +18,7 @@ class Commands(Cog):
         self.am = AllowedMentions()
         self.am.replied_user = False
 
-    @command()
+    @command(aliases=['e'])
     async def entities(self, ctx: Context):
         async with self.session() as s:
             entity_stmt = select(Entitys).where(Entitys.user_id == ctx.author.id)
@@ -84,7 +84,7 @@ class Commands(Cog):
                 except asyncio.TimeoutError:
                     return
 
-    @command()
+    @command(aliases=['p'])
     async def prayers(self, ctx: Context, entity: str):
         async with self.session() as s:
             entity_stmt = select(Entitys).where(Entitys.name == entity).where(Entitys.user_id == ctx.author.id).options(selectinload(Entitys.ps))
@@ -160,7 +160,7 @@ class Commands(Cog):
         if isinstance(error, MissingRequiredArgument):
             await ctx.reply("Missing argument\n> prayers <name>", allowed_mentions=self.am)
 
-    @command()
+    @command(aliases=['ui'])
     async def updateimage(self, ctx: Context, entity: str):
         try:
             image = ctx.message.attachments[0].url
@@ -185,7 +185,7 @@ class Commands(Cog):
         if isinstance(error, MissingRequiredArgument):
             await ctx.reply("Missing argument\n> updateimage <entity>", allowed_mentions=self.am)
 
-    @command()
+    @command(aliases=['ap'])
     async def addprayer(self, ctx: Context, entity: str, *, prayer: str):
         async with self.session() as s:
             async with s.begin():
@@ -213,7 +213,7 @@ class Commands(Cog):
         if isinstance(error, MissingRequiredArgument):
             await ctx.reply("Missing argument\n> addprayer <name> <prayer>", allowed_mentions=self.am)
 
-    @command()
+    @command(aliases=['ae'])
     async def addentity(self, ctx: Context, entity: str):
         image = None
 
@@ -243,7 +243,7 @@ class Commands(Cog):
         if isinstance(error, MissingRequiredArgument):
             await ctx.reply("Missing argument\n> addentity <name>", allowed_mentions=self.am)
 
-    @command()
+    @command(aliases=['un'])
     async def updatename(self, ctx: Context, old_entity: str, new_entity: str):
         async with self.session() as s:
             async with s.begin():
@@ -272,7 +272,7 @@ class Commands(Cog):
         if isinstance(error, MissingRequiredArgument):
             await ctx.reply("Missing argument\n> updatename <old_name> <new_name>", allowed_mentions=self.am)
 
-    @command()
+    @command(aliases=['rp'])
     async def removeprayer(self, ctx: Context, entity: str, id: int):
         stmt = select(Entitys).where(Entitys.name == entity).where(Entitys.user_id == ctx.author.id).options(selectinload(Entitys.ps))
         
@@ -302,7 +302,7 @@ class Commands(Cog):
         elif isinstance(error, MissingRequiredArgument):
             await ctx.reply("Missing argument\n> removeprayer <name> <id>", allowed_mentions=self.am)
 
-    @command()
+    @command(aliases=['re'])
     async def removeentity(self, ctx: Context, entity: str):
         async with self.session() as s:
             async with s.begin():
@@ -328,7 +328,7 @@ class Commands(Cog):
         if isinstance(error, MissingRequiredArgument):
             await ctx.reply("Missing argument\n> removeentity <name>", allowed_mentions=self.am)
 
-    @command()
+    @command(aliases=['cp'])
     @has_guild_permissions(administrator=True)
     async def changeprefix(self, ctx: Context, new_prefix: str):
         async with self.session() as s:
