@@ -26,11 +26,13 @@ class Events(Cog):
             print(f"Bot ID: {self.bot.user.id}")
 
             self.ready= True
-        else:
-            self.change.start()
-            self.update_cycle.start()
 
-            print("Reconnected")
+    @Cog.listener()
+    async def on_resumed(self):
+        self.change.start()
+        self.update_cycle.start()
+
+        print("Reconnected")
 
     @Cog.listener()
     async def on_guild_join(self, guild):
