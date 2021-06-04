@@ -6,11 +6,12 @@ class Help(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @command()
+    @command(aliases=['h'])
     async def help(self, ctx: Context):
         embed = Embed(title="Prayer Commands", color=0x990000, description="Prayer bot allows you to store different prayers dedicated to different entities.")
         
         embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.avatar_url)
+        embed.add_field(name="> help | alias h", value="Help and documentation for prayer bot", inline=False)
         embed.add_field(name="> addentity <name> | alias ae", value="Creates an entity and you can also attach an image that will then be associated with that entity", inline=False)
         embed.add_field(name="> updatename <old_name> <new_name> | alias un", value="Changes an entitys name", inline=False)
         embed.add_field(name="> updateimage <name> | alias ui", value="Allows you to add or update an image for an entity", inline=False)
