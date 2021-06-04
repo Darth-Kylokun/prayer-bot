@@ -340,7 +340,7 @@ class Commands(Cog):
 
                 await s.commit()
 
-        await ctx.send(f"Succefully change prefix to {new_prefix}")
+        await ctx.send(f"Successfully changed prefix to {new_prefix}")
 
     @changeprefix.error
     async def changeprefix_error(self, ctx: Context, error: CommandError):
