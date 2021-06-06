@@ -1,6 +1,7 @@
 import os
 from discord.ext import commands
 from database import session, Prefixes
+from discord import Intents
 
 def get_prefix(_bot, message):
     try:
@@ -9,7 +10,9 @@ def get_prefix(_bot, message):
         return "!!"
 
 def main():
-    Bot = commands.Bot(command_prefix=get_prefix)
+    intents: Intents = Intents.default()
+
+    Bot = commands.Bot(command_prefix=get_prefix, intents=intents)
     Bot.remove_command("help")
 
     for f in os.listdir('./cogs'):
