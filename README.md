@@ -28,4 +28,4 @@ Prayer bot is a bot that allows you to store prayers to different entities. The 
 If an entity has name that involves two words you must encapsulate the name in quotation marks ex. \"prayer bot\" or you can add a underscore to represent a space ex. prayer_bot
 
 ## Adding Bot
-To add to your server just invite using this [link](https://discord.com/oauth2/authorize?client_id=754848887323361350&permissions=289856&scope=bot)
+To add to your server just invite using this [link](https://discord.com/oauth2/authorize?client_id=754848887323361350&permissions=76864&scope=bot)
