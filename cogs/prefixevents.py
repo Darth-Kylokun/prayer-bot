@@ -13,7 +13,7 @@ class Events(Cog):
         self.session = sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
         self.cycle = None
         self.ready = False
-        
+
     @Cog.listener()
     async def on_ready(self):
         if not self.ready:
