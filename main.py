@@ -18,7 +18,7 @@ def main():
     for f in os.listdir('./cogs'):
         if f.endswith('.py'):
             Bot.load_extension(f'cogs.{f[:-3]}')
-    
+
     token = os.environ['TOKEN']
 
     Bot.run(token)
